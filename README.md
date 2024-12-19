@@ -1,4 +1,10 @@
-# Aplikasi Pengelolaan data Pegawai
+# Aplikasi Pengelolaan Yayasan
+
+## Fitur
+
+-   Pegawai
+-   Surat (WIP)
+-   dll
 
 ## Persyaratan
 
