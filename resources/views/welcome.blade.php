@@ -115,8 +115,12 @@
 
     <section class="hero">
         <h1>Pengelolaan Data Yayasan</h1>
-        <p>Kelola data Yayasan Anda dengan mudah</p>
-        <a href="{{ url('/admin') }}" class="button">Mulai</a>
+        <p>Kelola data Yayasan dengan mudah</p>
+        @auth
+            <a href="{{ url('/admin') }}" class="button">Dasbor</a>
+        @else
+            <a href="{{ url('/admin/login') }}" class="button">Login</a>
+        @endauth
     </section>
 
     <section id="features" class="features">
@@ -128,8 +132,8 @@
                 <circle cx="12" cy="12" r="3" fill="#0047AB"></circle>
             </svg>
 
-            <h3>Easy to Use</h3>
-            <p>Simple and intuitive design for all users.</p>
+            <h3>Mudah digunakan</h3>
+            <p>Desain yang sederhana untuk semua</p>
         </div>
         <div class="feature">
             <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none"
@@ -139,8 +143,8 @@
                 <circle cx="12" cy="12" r="3" fill="#0047AB"></circle>
             </svg>
 
-            <h3>Secure Data</h3>
-            <p>Top-notch security to keep your data safe.</p>
+            <h3>Keamanan</h3>
+            <p>Keamanan tingkat tinggi untuk data Anda.</p>
         </div>
         <div class="feature">
             <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none"
@@ -153,8 +157,8 @@
                 <line x1="10" y1="9" x2="8" y2="9"></line>
             </svg>
 
-            <h3>Comprehensive Reports</h3>
-            <p>Generate detailed reports in a few clicks.</p>
+            <h3>Laporan yang komprehensif</h3>
+            <p>Buat laporan hanya dengan beberapa klik saja!</p>
         </div>
     </section>
 
