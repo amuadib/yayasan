@@ -57,6 +57,12 @@ class PegawaiResource extends Resource
                     ->inline()
                     ->inlineLabel(false)
                     ->required(),
+                TextInput::make('fingerspot_sn')
+                    ->label('Fingerspot SN')
+                    ->helperText('Mesin Fingerprint'),
+                TextInput::make('fingerspot_pegawai_pin')
+                    ->label('Fingerspot ID')
+                    ->helperText('ID Pegawai di Aplikasi Fingerspot'),
             ])
             ->columns(3);
     }
@@ -73,6 +79,11 @@ class PegawaiResource extends Resource
                     ->formatStateUsing(fn(Pegawai $record): string => trim($record->gelar_depan . ' ' . $record->nama . ' ' . $record->gelar_belakang . ' (' . strtoupper($record->jenis_kelamin) . ')'))
                     ->searchable(),
                 TextColumn::make('alamat'),
+                Tables\Columns\IconColumn::make('fingerspot_pegawai_pin')
+                    ->label('Presensi')
+                    ->color(fn(string $state): string => $state != null ? 'success' : 'danger')
+                    ->icon(fn(string $state): string => $state != null ? 'heroicon-o-finger-print' : 'heroicon-o-x-mark'),
+
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
