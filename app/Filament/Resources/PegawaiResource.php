@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PegawaiResource\Pages;
 use App\Filament\Resources\PegawaiResource\RelationManagers;
+use App\Models\MesinPresensi;
 use App\Models\Pegawai;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -21,7 +22,7 @@ class PegawaiResource extends Resource
 {
     protected static ?string $model = Pegawai::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -57,12 +58,17 @@ class PegawaiResource extends Resource
                     ->inline()
                     ->inlineLabel(false)
                     ->required(),
-                TextInput::make('fingerspot_sn')
-                    ->label('Fingerspot SN')
-                    ->helperText('Mesin Fingerprint'),
-                TextInput::make('fingerspot_pegawai_pin')
-                    ->label('Fingerspot ID')
-                    ->helperText('ID Pegawai di Aplikasi Fingerspot'),
+                \Filament\Forms\Components\Repeater::make('mesin')
+                    ->label('Mesin Presensi')
+                    ->relationship('mesin')
+                    ->schema([
+                        \Filament\Forms\Components\Select::make('mesin_id')
+                            ->label('Nama Mesin')
+                            ->options(MesinPresensi::all()->pluck('nama', 'id')),
+                        TextInput::make('pin')
+                            ->label('PIN'),
+                    ])
+                    ->columnSpanFull()
             ])
             ->columns(3);
     }
@@ -79,11 +85,14 @@ class PegawaiResource extends Resource
                     ->formatStateUsing(fn(Pegawai $record): string => trim($record->gelar_depan . ' ' . $record->nama . ' ' . $record->gelar_belakang . ' (' . strtoupper($record->jenis_kelamin) . ')'))
                     ->searchable(),
                 TextColumn::make('alamat'),
-                Tables\Columns\IconColumn::make('fingerspot_pegawai_pin')
-                    ->label('Presensi')
-                    ->color(fn(string $state): string => $state != null ? 'success' : 'danger')
-                    ->icon(fn(string $state): string => $state != null ? 'heroicon-o-finger-print' : 'heroicon-o-x-mark'),
-
+                TextColumn::make('mesin.mesin_presensi.nama')
+                    ->label('Mesin Presensi')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Diniyah' => 'info',
+                        'SDIMU' => 'success',
+                        default => 'primary',
+                    }),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {

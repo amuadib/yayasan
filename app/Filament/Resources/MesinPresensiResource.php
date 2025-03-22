@@ -6,9 +6,11 @@ use App\Filament\Resources\MesinPresensiResource\Pages;
 use App\Filament\Resources\MesinPresensiResource\RelationManagers;
 use App\Models\MesinPresensi;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,20 +19,29 @@ class MesinPresensiResource extends Resource
 {
     protected static ?string $model = MesinPresensi::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calculator';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
+                TextInput::make('nama')
                     ->required(),
-                Forms\Components\TextInput::make('merek')
+                TextInput::make('nomor_mesin'),
+                TextInput::make('password'),
+                TextInput::make('merek')
                     ->required(),
-                Forms\Components\TextInput::make('tipe'),
-                Forms\Components\TextInput::make('sn')
+                TextInput::make('tipe'),
+                TextInput::make('sn')
+                    ->label('Serial Number')
                     ->required(),
-                Forms\Components\TextInput::make('ip'),
+                TextInput::make('kode_aktivasi')
+                    ->label('Kode Aktivasi Personnel'),
+                TextInput::make('kode_aktivasi_easy_link_sdk')
+                    ->label('Kode Aktivasi Easy Link SDK'),
+                TextInput::make('ip')
+                    ->label('Alamat IP'),
+                TextInput::make('port'),
             ]);
     }
 
@@ -38,16 +49,16 @@ class MesinPresensiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama')
+                TextColumn::make('nama')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('merek')
+                TextColumn::make('merek')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tipe')
+                TextColumn::make('tipe')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('sn')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('ip')
-                    ->searchable(),
+                TextColumn::make('sn')
+                    ->label('Serial'),
+                TextColumn::make('ip')
+                    ->label('Alamat IP'),
             ])
             ->filters([
                 //

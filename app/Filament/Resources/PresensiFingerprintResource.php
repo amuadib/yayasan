@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PresensiFingerprintResource extends Resource
 {
     protected static ?string $model = PresensiFingerprint::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $modelLabel = 'Scan Log';
+    protected static ?string $navigationGroup = 'Fingerspot';
+    protected static ?string $navigationLabel = 'Scan Log';
+    protected static ?string $navigationIcon = 'heroicon-o-finger-print';
 
     // public static function form(Form $form): Form
     // {
@@ -61,7 +63,7 @@ class PresensiFingerprintResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('scan_date')
                     ->dateTime(),
-                Tables\Columns\TextColumn::make('pegawai.pegawai_nama')
+                Tables\Columns\TextColumn::make('pin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('verifymode')
                     ->numeric()
