@@ -6,6 +6,9 @@ use App\Filament\Resources\JamKerjaResource\Pages;
 use App\Filament\Resources\JamKerjaResource\RelationManagers;
 use App\Models\JamKerja;
 use Filament\Forms;
+use Filament\Forms\Get;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -38,9 +41,26 @@ class JamKerjaResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nama')
                     ->required(),
+                Forms\Components\fieldset::make('Prioritas Jadwal')
+                    ->schema([
+                        Radio::make('prioritas')
+                            ->options(['y' => 'Ya', 'n' => 'Tidak'])
+                            ->inline()
+                            ->inlineLabel(false)
+                            ->live()
+                            ->required(),
+                        DatePicker::make('tgl_mulai_prioritas')
+                            ->visible(fn(Get $get) => $get('prioritas') == 'y')
+                            ->required(fn(Get $get) => $get('prioritas') == 'y'),
+                        DatePicker::make('tgl_selesai_prioritas')
+                            ->visible(fn(Get $get) => $get('prioritas') == 'y')
+                            ->required(fn(Get $get) => $get('prioritas') == 'y'),
+                    ])
+                    ->columns(3),
+
                 Forms\Components\Repeater::make('jam_kerja')
                     ->schema([
-                        Forms\Components\Radio::make('hari')
+                        Radio::make('hari')
                             ->options(config('local.hari'))
                             ->inline()
                             ->inlineLabel(false)
