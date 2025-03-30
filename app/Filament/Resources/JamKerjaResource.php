@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\TextEntry;
 
 class JamKerjaResource extends Resource
 {
@@ -28,7 +29,28 @@ class JamKerjaResource extends Resource
     {
         return $infolist
             ->schema([
-                \Filament\Infolists\Components\TextEntry::make('nama'),
+                TextEntry::make('nama'),
+                TextEntry::make('keterangan')
+                    ->placeholder('-')
+                    ->columnSpanFull(),
+                \Filament\Infolists\Components\Fieldset::make('Prioritas')
+                    ->schema([
+                        TextEntry::make('prioritas')
+                            ->badge()
+                            ->formatStateUsing(fn(string $state): string => match ($state) {
+                                'n' => 'Normal',
+                                'y' => 'Prioritas',
+                            })
+                            ->color(fn(string $state): string => match ($state) {
+                                'n' => 'gray',
+                                'y' => 'danger',
+                            }),
+                        TextEntry::make('tgl_mulai_prioritas')
+                            ->placeholder('-'),
+                        TextEntry::make('tgl_selesai_prioritas')
+                            ->placeholder('-'),
+                    ])
+                    ->columns(3),
                 \Filament\Infolists\Components\ViewEntry::make('jam_kerja')
                     ->label('Jadwal')
                     ->view('filament.infolists.entries.jadwal')
@@ -41,9 +63,12 @@ class JamKerjaResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nama')
                     ->required(),
+                Forms\Components\Textarea::make('keterangan')
+                    ->columnSpanFull(),
                 Forms\Components\fieldset::make('Prioritas Jadwal')
                     ->schema([
                         Radio::make('prioritas')
+                            ->helperText('Jadwal prioritas akan menimpa jadwal dengan Nama sama pada Tanggal yang ditentukan')
                             ->options(['y' => 'Ya', 'n' => 'Tidak'])
                             ->inline()
                             ->inlineLabel(false)
@@ -84,26 +109,42 @@ class JamKerjaResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama')
+                    ->description(fn(JamKerja $record): string => $record->keterangan ?? '')
                     ->searchable(),
                 Tables\Columns\ViewColumn::make('jam_kerja')
                     ->label('Jam Mengajar')
                     ->view('filament.tables.columns.jadwal'),
-                TextColumn::make('pegawai.nama')
+                TextColumn::make('pegawai')
                     ->label('Ustadz/Ustadzah')
+                    ->formatStateUsing(fn($state): string => trim($state->gelar_depan . ' ' . $state->nama . ' ' . $state->gelar_belakang . ' (' . strtoupper($state->jenis_kelamin) . ')'))
                     ->listWithLineBreaks()
                     ->bulleted()
+                    ->limitList(5)
+                    ->expandableLimitedList(),
+                TextColumn::make('prioritas')
+                    ->badge()
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'n' => 'Normal',
+                        'y' => 'Prioritas',
+                    })
+                    ->color(fn(string $state): string => match ($state) {
+                        'n' => 'gray',
+                        'y' => 'danger',
+                    })
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\ReplicateAction::make()
+                        ->color('info'),
+                    Tables\Actions\EditAction::make(),
+                ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

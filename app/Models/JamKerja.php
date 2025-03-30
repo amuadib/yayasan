@@ -18,6 +18,7 @@ class JamKerja extends Model
     public function pegawai(): BelongsToMany
     {
         return $this->belongsToMany(Pegawai::class, 'jam_kerja_pegawai')
+            ->where('status', 'Aktif')
             ->orderBy('nama');
     }
 }
